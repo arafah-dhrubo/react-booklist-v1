@@ -1,17 +1,12 @@
 import { Component } from 'react';
-import Book from './Book'
 import booklist from '../Assets/booklist'
+import BookList from './BookList';
+import NewBook from './NewBook';
+import { Route, NavLink } from 'react-router-dom';
 class MainComponent extends Component {
   state = {
     books: booklist,
-    showBooks: true
   }
-
-  // changeBookState = (newBookName) => {
-  //   this.setState({
-  //     bookName: this.state.books[0].bookName = newBookName
-  //   });
-  // }
 
   changeWithInput = (index, event) => {
     const book = { ...this.state.books[index] }
@@ -29,10 +24,6 @@ class MainComponent extends Component {
     this.setState({ books: books });
   }
 
-  toggleBookState = () => {
-    this.setState({ showBooks: !this.state.showBooks });
-  }
-
   render() {
     const style = {
       border: "1px solid red",
@@ -41,27 +32,26 @@ class MainComponent extends Component {
       color: "white",
     }
 
-    let books = null;
-    if (this.state.showBooks) {
-      books = this.state.books.map((book, index) => {
-        return (
-          <Book
-            bookName={book.bookName}
-            writer={book.writer}
-            change={(event) => this.changeWithInput(index, event)}
-            delete={() => this.deleteBookState(index)}
-            key={book.id}
-          />
-        )
-      });
-    }
+    const books = <BookList
+      books={this.state.books}
+      deleteBookState={this.deleteBookState}
+      changeWithInput={this.changeWithInput}
+    />
+
 
     return (
       <div className="App">
-        <h1 style={style}>Book List</h1>
-        <button onClick={this.toggleBookState}>Toggle Books</button><br />
-        <input type="text" onChange={this.changeWithInput} />
-        {books}
+        <nav className="nav-bar">
+          <ul>
+            <li><NavLink exact to="/">Home</NavLink></li>
+            <li><NavLink to="/new-book">New Book</NavLink></li>
+          </ul>
+        </nav>
+        <Route path="/" exact render={() => books} />
+        <Route path="/new-book" exact render={() => <NewBook />} />
+        {/* evabeo pass kora jay
+         <Route path="/new-book" exact component={NewBook} />
+          */}
       </div>
     );
   }
