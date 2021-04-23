@@ -1,15 +1,15 @@
 import React from 'react'
 import '../stylesheets/Book.css'
+import '../App.css'
 
 function Book(props) {
+  console.log(props)
   return (
-    <div className="Book">
-      <h3 onClick={props.delete}>Book Name: {props.bookName}</h3>
+    <div className="Book" onClick={props.selectedBookHandler}>
+      <h3>Book Name: {props.bookName}</h3>
       <h4>Writer: {props.writer}</h4>
-      <input type="text" onChange={props.change} placeholder={props.bookName} />
-
     </div>
-  )
+  );
 }
 
 export default Book

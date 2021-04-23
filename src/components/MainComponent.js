@@ -2,40 +2,27 @@ import { Component } from 'react';
 import booklist from '../Assets/booklist'
 import BookList from './BookList';
 import NewBook from './NewBook';
-import { Route, NavLink } from 'react-router-dom';
+import BookDetail from './BookDetail'
+import { Route, NavLink, Switch, Redirect } from 'react-router-dom';
 class MainComponent extends Component {
   state = {
     books: booklist,
+    selectedBook: null,
   }
 
-  changeWithInput = (index, event) => {
-    const book = { ...this.state.books[index] }
-    book.bookName = event.target.value;
-    const books = [...this.state.books];
-    books[index] = book;
-    this.setState({ books: books });
-  }
-
-  deleteBookState = (index) => {
-    // const books = this.state.books.slice();
-    // const books = this.state.books.map(item=>item);
-    const books = [...this.state.books];
-    books.splice(index, 1);
-    this.setState({ books: books });
+  selectedBookHandler = bookID => {
+    const book = this.state.books.filter(book =>
+      book.id === bookID)[0];
+    console.log(book);
+    this.setState({
+      selectedBook: book
+    })
   }
 
   render() {
-    const style = {
-      border: "1px solid red",
-      borderRadius: "5px",
-      background: "red",
-      color: "white",
-    }
-
     const books = <BookList
       books={this.state.books}
-      deleteBookState={this.deleteBookState}
-      changeWithInput={this.changeWithInput}
+      selectedBookHandler={this.selectedBookHandler}
     />
 
 
@@ -47,11 +34,15 @@ class MainComponent extends Component {
             <li><NavLink to="/new-book">New Book</NavLink></li>
           </ul>
         </nav>
-        <Route path="/" exact render={() => books} />
-        <Route path="/new-book" exact render={() => <NewBook />} />
-        {/* evabeo pass kora jay
+        <Switch>
+          <Route path="/books" exact render={() => books} />
+          <Route path="/new-book" exact render={() => <NewBook />} />
+          {/* evabeo pass kora jay
          <Route path="/new-book" exact component={NewBook} />
           */}
+          <Route path="/:id" render={() => <BookDetail book={this.state.selectedBook} />} />
+          <Redirect from="/" to="/books" />
+        </Switch>
       </div>
     );
   }
